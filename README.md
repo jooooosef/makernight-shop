@@ -30,12 +30,13 @@ To list every command, run `just` without arguments.
 
 ```
 backend/
-  api/            shared API code: errors and access levels
+  api/            shared API code: errors, access levels, API description
   config/         settings and URLs
   tests/          tests over HTTP
   manage.py       Django's command-line tool, run with just manage
 frontend/
-  src/            the React app
+  openapi.json    the API description, written by just generate-api
+  src/            the React app; src/api/schema.d.ts is written by just generate-api
   tests/          page tests
 justfile          the project's commands
 pyproject.toml    Python dependencies and tool settings

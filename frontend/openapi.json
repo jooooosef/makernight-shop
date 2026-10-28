@@ -1,0 +1,136 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Maker night shop",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/api/v1/status": {
+            "get": {
+                "operationId": "api_v1_status_retrieve",
+                "tags": [
+                    "api"
+                ],
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Status"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorBody"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "ErrorBody": {
+                "type": "object",
+                "description": "The body of every error response.",
+                "properties": {
+                    "code": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/ErrorCode"
+                            }
+                        ],
+                        "description": "What went wrong, as a fixed value to branch on."
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "What went wrong, in English. For developers, not shown to the user."
+                    },
+                    "details": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/FieldError"
+                        },
+                        "nullable": true,
+                        "description": "The rejected fields when `code` is `INVALID_INPUT`, otherwise null."
+                    }
+                },
+                "required": [
+                    "code",
+                    "details",
+                    "message"
+                ]
+            },
+            "ErrorCode": {
+                "enum": [
+                    "INVALID_INPUT",
+                    "NOT_LOGGED_IN",
+                    "FORBIDDEN",
+                    "NOT_FOUND",
+                    "METHOD_NOT_ALLOWED",
+                    "INTERNAL"
+                ],
+                "type": "string"
+            },
+            "FieldError": {
+                "type": "object",
+                "properties": {
+                    "field": {
+                        "type": "string",
+                        "description": "The rejected field. A nested field has a dot between the levels."
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "Why the value was rejected."
+                    }
+                },
+                "required": [
+                    "field",
+                    "message"
+                ]
+            },
+            "Status": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/StatusEnum"
+                            }
+                        ],
+                        "description": "The server is running."
+                    }
+                },
+                "required": [
+                    "status"
+                ]
+            },
+            "StatusEnum": {
+                "enum": [
+                    "ok"
+                ],
+                "type": "string"
+            }
+        },
+        "securitySchemes": {
+            "cookieAuth": {
+                "type": "apiKey",
+                "in": "cookie",
+                "name": "sessionid"
+            }
+        }
+    }
+}

@@ -63,3 +63,12 @@ lint-backend:
 lint-frontend:
     cd frontend && npm run format:check
     cd frontend && npm run lint
+
+# Writes the API description and the frontend's types from it
+generate-api:
+    just manage spectacular --format openapi-json --validate --fail-on-warn --file ../frontend/openapi.json
+    cd frontend && npx openapi-typescript openapi.json -o src/api/schema.d.ts
+
+# Fails when the committed API description or types are out of date
+check-api: generate-api
+    git diff --exit-code -- frontend/openapi.json frontend/src/api/schema.d.ts

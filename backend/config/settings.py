@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -89,6 +90,16 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "EXCEPTION_HANDLER": "api.errors.handle_exception",
+    "DEFAULT_SCHEMA_CLASS": "api.schema.AutoSchema",
+}
+
+# The API description, from which the frontend's types are generated
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Maker night shop",
+    "VERSION": "0.1.0",
+    "ENUM_NAME_OVERRIDES": {"ErrorCode": "api.errors.ErrorCode"},
+    # The values of an enum are its labels, so a list of them would only repeat them
+    "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
 }
 
 LOGGING = {

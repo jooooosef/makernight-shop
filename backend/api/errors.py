@@ -7,7 +7,7 @@ from enum import StrEnum
 from typing import Any, NoReturn
 
 from django.http import Http404, HttpRequest
-from rest_framework import exceptions
+from rest_framework import exceptions, serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView, set_rollback
 
@@ -23,6 +23,29 @@ class ErrorCode(StrEnum):
     NOT_FOUND = "NOT_FOUND"
     METHOD_NOT_ALLOWED = "METHOD_NOT_ALLOWED"
     INTERNAL = "INTERNAL"
+
+
+class FieldErrorSerializer(serializers.Serializer[Any]):
+    field = serializers.CharField(
+        help_text="The rejected field. A nested field has a dot between the levels."
+    )
+    message = serializers.CharField(help_text="Why the value was rejected.")
+
+
+class ErrorBodySerializer(serializers.Serializer[Any]):
+    """The body of every error response."""
+
+    code = serializers.ChoiceField(
+        choices=list(ErrorCode), help_text="What went wrong, as a fixed value to branch on."
+    )
+    message = serializers.CharField(
+        help_text="What went wrong, in English. For developers, not shown to the user."
+    )
+    details = FieldErrorSerializer(
+        many=True,
+        allow_null=True,
+        help_text="The rejected fields when `code` is `INVALID_INPUT`, otherwise null.",
+    )
 
 
 class ApiError(exceptions.APIException):
