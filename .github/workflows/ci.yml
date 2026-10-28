@@ -1,0 +1,66 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+# A new push to a pull request cancels the run of the previous push. Runs on main get a
+# group of their own, so none of them is cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+env:
+  # uv fails when uv.lock is out of date with pyproject.toml, instead of updating it
+  UV_LOCKED: true
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - id: setup
+        uses: ./.github/actions/setup
+        with:
+          backend: true
+          frontend: true
+      - run: just lint-backend
+      # Runs even when the backend lint failed, so one run shows both results
+      - if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
+        run: just lint-frontend
+
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+        with:
+          backend: true
+      - run: just test-backend
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+        with:
+          frontend: true
+      - run: just test-frontend
+
+  drift-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+        with:
+          backend: true
+          frontend: true
+      - run: just check-api
+
+  drift-migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup
+        with:
+          backend: true
+      - run: just check-migrations

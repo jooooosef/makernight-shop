@@ -72,3 +72,14 @@ generate-api:
 # Fails when the committed API description or types are out of date
 check-api: generate-api
     git diff --exit-code -- frontend/openapi.json frontend/src/api/schema.d.ts
+
+# Fails when a model changed without a migration for it
+check-migrations:
+    just manage makemigrations --check --dry-run
+
+# Fails when uv.lock is out of date with pyproject.toml
+check-lock:
+    uv lock --check
+
+# Everything the CI checks. Keep in step with .github/workflows/ci.yml
+check-all: check-lock lint test check-api check-migrations

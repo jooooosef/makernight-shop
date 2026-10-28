@@ -31,6 +31,8 @@ To list every command, run `just` without arguments.
 - `just test` runs the backend and frontend tests.
 - `just lint` runs ruff, mypy, Prettier, ESLint and the TypeScript compiler. `just format` fixes what it can.
 - After changing the API, run `just generate-api` and commit its two files. `just check-api` fails when they're out of date.
+- After changing a model, run `just manage makemigrations` and commit the migration. `just check-migrations` fails when one is missing.
+- `just check-all` runs everything the CI on GitHub checks: the lock file, lint, the tests, `check-api` and `check-migrations`.
 
 ## Layout
 
