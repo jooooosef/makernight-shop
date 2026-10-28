@@ -1,5 +1,4 @@
 import pytest
-from api.access import Anyone, Organizer, Team, undeclared_endpoints
 from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse
 from django.urls import URLPattern, URLResolver, get_resolver, include, path
@@ -7,6 +6,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.test import APIClient
 from rest_framework.views import APIView
+
+from api.access import Anyone, Organizer, Team, undeclared_endpoints
 
 
 # Made-up endpoints, because the real app must not have one without exactly one level

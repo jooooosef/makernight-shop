@@ -25,7 +25,9 @@ dev = [
 [tool.ruff]
 target-version = "py313"
 line-length = 100
-# Without this, ruff also formats the code in Markdown files, such as the local notes
+# Where our own packages live, so imports of them are sorted apart from libraries
+src = ["backend"]
+# Without this, ruff also formats the Python code in Markdown files, such as the README
 include = ["*.py", "pyproject.toml"]
 
 [tool.ruff.lint]

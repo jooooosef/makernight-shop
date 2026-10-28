@@ -38,12 +38,21 @@ function isErrorBody(body: unknown): body is ErrorBody {
   );
 }
 
+// What a proxy in front of the server answers when the server is down or too slow
+const GATEWAY_ERRORS = [502, 503, 504];
+
 async function toApiError(response: Response): Promise<ApiError> {
   const body: unknown = await response.json().catch(() => null);
   if (isErrorBody(body)) {
     return new ApiError(body.code, body.message, body.details);
   }
-  // Not the server's error body, such as a proxy's error page
+  if (GATEWAY_ERRORS.includes(response.status)) {
+    return new ApiError(
+      NETWORK_ERROR,
+      `The server did not respond (HTTP ${response.status}).`,
+    );
+  }
+  // Not the server's error body, such as a page of a broken proxy
   return new ApiError("INTERNAL", `HTTP ${response.status}`);
 }
 

@@ -24,13 +24,12 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** @description The body of every error response. */
         ErrorBody: {
             /** @description What went wrong, as a fixed value to branch on. */
             code: components["schemas"]["ErrorCode"];
-            /** @description What went wrong, in English. For developers, not shown to the user. */
+            /** @description What went wrong, in English. For developers: the page shows its own text. */
             message: string;
-            /** @description The rejected fields when `code` is `INVALID_INPUT`, otherwise null. */
+            /** @description The rejected fields when `code` is `INVALID_INPUT`. Null when no single field was rejected, such as for a body that isn't JSON. */
             details: components["schemas"]["FieldError"][] | null;
         };
         /** @enum {string} */

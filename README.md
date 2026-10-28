@@ -10,7 +10,7 @@ You need [uv](https://docs.astral.sh/uv/), which also installs Python, [Node.js]
    just setup
    ```
 
-2. Create your organizer account:
+2. Create an account to log into the Django admin. The command asks for a username, an email address (optional) and a password:
 
    ```bash
    just manage createsuperuser
@@ -25,6 +25,12 @@ You need [uv](https://docs.astral.sh/uv/), which also installs Python, [Node.js]
 4. Open the shop at <http://localhost:5173/> and the admin at <http://localhost:8000/admin/>.
 
 To list every command, run `just` without arguments.
+
+## Test and lint
+
+- `just test` runs the backend and frontend tests.
+- `just lint` runs ruff, mypy, Prettier, ESLint and the TypeScript compiler. `just format` fixes what it can.
+- After changing the API, run `just generate-api` and commit its two files. `just check-api` fails when they're out of date.
 
 ## Layout
 

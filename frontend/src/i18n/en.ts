@@ -1,7 +1,7 @@
 import type { ErrorCode } from "@/api/client";
 import type { components } from "@/api/schema";
 
-type Status = components["schemas"]["StatusEnum"];
+type StatusValue = components["schemas"]["StatusEnum"];
 
 // For the codes a team can't act on. They only reach a team through a defect of ours.
 const UNEXPECTED = "Something went wrong. Please try again.";
@@ -12,7 +12,7 @@ export const en = {
     checking: "Checking the server…",
     status: {
       ok: "The server is running.",
-    } satisfies Record<Status, string>,
+    } satisfies Record<StatusValue, string>,
   },
   crash: {
     title: "Something went wrong.",

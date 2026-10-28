@@ -45,7 +45,6 @@
         "schemas": {
             "ErrorBody": {
                 "type": "object",
-                "description": "The body of every error response.",
                 "properties": {
                     "code": {
                         "allOf": [
@@ -57,7 +56,7 @@
                     },
                     "message": {
                         "type": "string",
-                        "description": "What went wrong, in English. For developers, not shown to the user."
+                        "description": "What went wrong, in English. For developers: the page shows its own text."
                     },
                     "details": {
                         "type": "array",
@@ -65,7 +64,7 @@
                             "$ref": "#/components/schemas/FieldError"
                         },
                         "nullable": true,
-                        "description": "The rejected fields when `code` is `INVALID_INPUT`, otherwise null."
+                        "description": "The rejected fields when `code` is `INVALID_INPUT`. Null when no single field was rejected, such as for a body that isn't JSON."
                     }
                 },
                 "required": [

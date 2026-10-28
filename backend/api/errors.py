@@ -6,6 +6,7 @@ import logging
 from enum import StrEnum
 from typing import Any, NoReturn
 
+from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpRequest
 from rest_framework import exceptions, serializers
 from rest_framework.response import Response
@@ -33,18 +34,17 @@ class FieldErrorSerializer(serializers.Serializer[Any]):
 
 
 class ErrorBodySerializer(serializers.Serializer[Any]):
-    """The body of every error response."""
-
     code = serializers.ChoiceField(
         choices=list(ErrorCode), help_text="What went wrong, as a fixed value to branch on."
     )
     message = serializers.CharField(
-        help_text="What went wrong, in English. For developers, not shown to the user."
+        help_text="What went wrong, in English. For developers: the page shows its own text."
     )
     details = FieldErrorSerializer(
         many=True,
         allow_null=True,
-        help_text="The rejected fields when `code` is `INVALID_INPUT`, otherwise null.",
+        help_text="The rejected fields when `code` is `INVALID_INPUT`. Null when no single field "
+        "was rejected, such as for a body that isn't JSON.",
     )
 
 
@@ -101,8 +101,11 @@ def handle_exception(exc: Exception, context: dict[str, Any]) -> Response:
     """DRF's `EXCEPTION_HANDLER`: turns every exception a view raises into the error body."""
     # Rolls back the transaction of the request, as DRF's own handler does
     set_rollback()
+    # Django's own, which DRF's handler converts too
     if isinstance(exc, Http404):
         exc = exceptions.NotFound()
+    elif isinstance(exc, PermissionDenied):
+        exc = exceptions.PermissionDenied()
     if isinstance(exc, exceptions.ValidationError):
         details = _field_errors(exc.detail)
         return _response(400, ErrorCode.INVALID_INPUT, "The input is invalid.", details)
