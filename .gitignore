@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+frontend/dist/
+# The development database, with its write-ahead log files
+backend/db.sqlite3*
+.scratch/
