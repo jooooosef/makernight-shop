@@ -6,5 +6,7 @@ admin.site.site_title = "Maker night shop"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    # The language switch in the admin
+    path("i18n/", include("django.conf.urls.i18n")),
     path("api/", include("api.urls")),
 ]
